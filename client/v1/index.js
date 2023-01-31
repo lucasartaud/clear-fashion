@@ -4,7 +4,7 @@
 
 console.log('🚀 This is it.');
 
-const MY_FAVORITE_BRANDS = [
+const my_favorite_brands = [
   {
     'name': 'Faguo',
     'url': 'https://www.faguo-store.com'
@@ -19,8 +19,8 @@ const MY_FAVORITE_BRANDS = [
   }
 ];
 
-console.table(MY_FAVORITE_BRANDS);
-console.log(MY_FAVORITE_BRANDS[0]);
+console.table(my_favorite_brands);
+console.log(my_favorite_brands[0]);
 
 /**
  * 🌱
@@ -33,9 +33,9 @@ console.log(MY_FAVORITE_BRANDS[0]);
 // 0. I have 3 favorite brands stored in MY_FAVORITE_BRANDS variable
 // 1. Create a new variable and assign it the link of the cheapest t-shirt
 // I can find on these e-shops
-const CHEAPEST_TSHIRT = "https://www.faguo-store.com/fr/vetements/7606-arcy-t-shirt-en-coton-recycle-kaki.html";
+const cheapest_tshirt = "https://www.faguo-store.com/fr/vetements/7606-arcy-t-shirt-en-coton-recycle-kaki.html";
 // 2. Log the variable
-console.log(CHEAPEST_TSHIRT);
+console.log(cheapest_tshirt);
 
 /**
  * 👕
@@ -48,17 +48,28 @@ console.log(CHEAPEST_TSHIRT);
 
 // 🎯 TODO 2: Number of products
 // 1. Create a variable and assign it the number of products
-const NUMBER_OF_PRODUCTS = marketplace.length;
+const number_of_products = marketplace.length;
 // 2. Log the variable
-console.log(NUMBER_OF_PRODUCTS);
+console.log(number_of_products);
 
 // 🎯 TODO 3: Brands name
 // 1. Create a variable and assign it the list of brands name only
+var brands = [];
+for (var product_id in marketplace){
+  if (!(brands.includes(marketplace[product_id]["brand"]))){
+    brands.push(marketplace[product_id]["brand"]);
+  }
+}
 // 2. Log the variable
+console.log(brands);
 // 3. Log how many brands we have
+console.log(brands.length);
 
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the marketplace products by price
+marketplace.sort(function(a, b)) {
+  return a.price - b.price;
+}
 // 2. Create a variable and assign it the list of products by price from lowest to highest
 // 3. Log the variable
 
