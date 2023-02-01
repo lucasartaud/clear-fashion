@@ -87,11 +87,21 @@ console.table(sortdate);
 
 // 🎯 TODO 6: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
+const result = marketplace.filter(product => product["price"] >= 50 && product["price"] <= 100);
+// const result = marketplace.filter(function(x){return x.price >= 50 && x.price <= 100});
 // 2. Log the list
+console.table(result);
 
 // 🎯 TODO 7: Average price
 // 1. Determine the average price of the marketplace
+var prices = []
+for (var product_id in marketplace){
+  prices.push(marketplace[product_id]["price"]);
+}
+const sum = prices.reduce((a, b) => a + b, 0); // 0 is the initial value of the accumulator
+const average = (sum / prices.length);
 // 2. Log the average
+console.log(average)
 
 /**
  * 🏎
