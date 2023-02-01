@@ -54,16 +54,16 @@ console.log(number_of_products);
 
 // 🎯 TODO 3: Brands name
 // 1. Create a variable and assign it the list of brands name only
-var brands = [];
+var brand_names = [];
 for (var product_id in marketplace){
-  if (!(brands.includes(marketplace[product_id]["brand"]))){
-    brands.push(marketplace[product_id]["brand"]);
+  if (!(brand_names.includes(marketplace[product_id]["brand"]))){
+    brand_names.push(marketplace[product_id]["brand"]);
   }
 }
 // 2. Log the variable
-console.log(brands);
+console.log(brand_names);
 // 3. Log how many brands we have
-console.log(brands.length);
+console.log(brand_names.length);
 
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the marketplace products by price
@@ -122,13 +122,34 @@ console.log(average)
 //   ....
 //   'brand-name-n': [{...}, {...}, ..., {...}],
 // };
-//
+const brands = {};
+for (var brand in brand_names){
+  brands[brand_names[brand]] = new Array();
+}
+for (var product_id in marketplace){
+  //brands[marketplace[product_id]["brand"]].push(marketplace[product_id]["name"])
+  //brands[marketplace[product_id]["brand"]].push([marketplace[product_id]["link"], marketplace[product_id]["price"], marketplace[product_id]["name"], marketplace[product_id]["photo"], marketplace[product_id]["uuid"], marketplace[product_id]["released"]]);
+  brands[marketplace[product_id]["brand"]].push(marketplace[product_id]);
+}
 // 2. Log the variable
+console.table(brands);
 // 3. Log the number of products by brands
+for (brand in brands){
+  console.log(brand, "has", brands[brand].length, "products");
+}
 
 // 🎯 TODO 9: Sort by price for each brand
 // 1. For each brand, sort the products by price, from highest to lowest
+function sortByPrice(a, b) {
+  return parseFloat(a["price"]) - parseFloat(b["price"]);
+}
+const sortpricepanafrica = brands["panafrica"].sort(sortByPrice);
+const sortpriceloom = brands["loom"].sort(sortByPrice);
+const sortpricehast = brands["hast"].sort(sortByPrice);
 // 2. Log the sort
+console.table(sortpricepanafrica);
+console.table(sortpriceloom);
+console.table(sortpricehast);
 
 // 🎯 TODO 10: Sort by date for each brand
 // 1. For each brand, sort the products by date, from old to recent
