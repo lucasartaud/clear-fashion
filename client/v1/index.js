@@ -67,21 +67,21 @@ console.log(brand_names.length);
 
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the marketplace products by price
-function sortByPrice(a, b) {
+function sortByPriceFromLowest(a, b) {
   return parseFloat(a.price) - parseFloat(b.price);
 }
 // 2. Create a variable and assign it the list of products by price from lowest to highest
-const sortprice = marketplace.sort(sortByPrice);
+const sortprice = marketplace.sort(sortByPriceFromLowest);
 // 3. Log the variable
 console.table(sortprice);
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
-function sortByDate(a, b) {
+function sortByDateFromNewest(a, b) {
   return new Date(b.released) - new Date(a.released);
 }
 // 2. Create a variable and assign it the list of products by date from recent to old
-const sortdate = marketplace.sort(sortByDate);
+const sortdate = marketplace.sort(sortByDateFromNewest);
 // 3. Log the variable
 console.table(sortdate);
 
@@ -140,20 +140,31 @@ for (brand in brands){
 
 // 🎯 TODO 9: Sort by price for each brand
 // 1. For each brand, sort the products by price, from highest to lowest
-function sortByPrice(a, b) {
-  return parseFloat(a["price"]) - parseFloat(b["price"]);
+function sortByPriceFromHighest(a, b) {
+  return parseFloat(b.price) - parseFloat(a.price);
 }
-const sortpricepanafrica = brands["panafrica"].sort(sortByPrice);
-const sortpriceloom = brands["loom"].sort(sortByPrice);
-const sortpricehast = brands["hast"].sort(sortByPrice);
+const price_sorted_brands = {};
+for (brand in brands){
+  price_sorted_brands[brand] = brands[brand].sort(sortByPriceFromHighest);
+}
 // 2. Log the sort
-console.table(sortpricepanafrica);
-console.table(sortpriceloom);
-console.table(sortpricehast);
+for (brand in price_sorted_brands){
+ console.table(price_sorted_brands[brand])
+}
 
 // 🎯 TODO 10: Sort by date for each brand
 // 1. For each brand, sort the products by date, from old to recent
+function sortByDateFromOldest(a, b) {
+  return new Date(a.released) - new Date(b.released);
+}
+const date_sorted_brands = {};
+for (brand in brands){
+  date_sorted_brands[brand] = brands[brand].sort(sortByDateFromOldest);
+}
 // 2. Log the sort
+for (brand in date_sorted_brands){
+  console.table(date_sorted_brands[brand]);
+}
 
 /**
  * 💶
