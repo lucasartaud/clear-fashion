@@ -400,10 +400,21 @@ console.log("Reasonable price:", reasonable_price);
 // 🎯 TODO 3: Find a specific product
 // 1. Find the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the product
+for (var product_id in cotele_paris){
+  if(cotele_paris[product_id]["uuid"] == "2b9a47e3-ed73-52f6-8b91-379e9c8e526c"){
+    console.table(cotele_paris[product_id]);
+  }
+}
 
 // 🎯 TODO 4: Delete a specific product
 // 1. Delete the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the new list of product
+for (var product_id in cotele_paris){
+  if(cotele_paris[product_id]["uuid"] == "2b9a47e3-ed73-52f6-8b91-379e9c8e526c"){
+    delete(cotele_paris[product_id]);
+  }
+}
+console.table(cotele_paris);
 
 // 🎯 TODO 5: Save the favorite product
 // We declare and assign a variable called `blueJacket`
