@@ -191,7 +191,7 @@ console.log(percentile_90th);
  * 🧥
  */
 
-const COTELE_PARIS = [
+const cotele_paris = [
   {
     'link':
       'https://coteleparis.com/collections/homme/products/casquette-cotele-vert-olive?_pos=7&_fid=2fee5844b&_ss=c?variant=43527862485222&tag=homme',
@@ -373,10 +373,29 @@ const COTELE_PARIS = [
 // 🎯 TODO 1: New released products
 // // 1. Log if we have new products only (true or false)
 // // A new product is a product `released` less than 2 weeks.
+var only_new_products = true;
+const current_date = Date.now();
+console.log(current_date);
+for (var product_id in cotele_paris){
+  const released_date = new Date(cotele_paris[product_id]["released"]);
+  const difference_time = current_date - released_date;
+  const difference_days = difference_time / (1000 * 60 * 60 * 24);
+  if (difference_days > 14){
+    only_new_products = false;
+  }
+}
+console.log("Only new products:", only_new_products);
 
 // 🎯 TODO 2: Reasonable price
 // // 1. Log if coteleparis is a reasonable price shop (true or false)
 // // A reasonable price if all the products are less than 100€
+var reasonable_price = true;
+for (var product_id in cotele_paris){
+  if(cotele_paris[product_id]["price"] > 100){
+    reasonable_price = false;
+  }
+}
+console.log("Reasonable price:", reasonable_price);
 
 // 🎯 TODO 3: Find a specific product
 // 1. Find the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
