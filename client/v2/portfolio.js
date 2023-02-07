@@ -160,10 +160,17 @@ selectPage.addEventListener('change', async (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const brand_names = await fetchBrands();
+  console.log(brand_names);
+  const brands = Array.from(
+    brand_names.result,
+    value => `<option value="${value}">${value}</option>`
+  ).join('');
+  console.log(brands);
+  selectBrand.innerHTML = brands;
+  
   const products = await fetchProducts();
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
-
-//selectBrand.innerHTML = renderProducts();
