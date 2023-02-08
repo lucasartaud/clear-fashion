@@ -21,13 +21,16 @@ Search for available brands list
 let currentProducts = [];
 let currentPagination = {};
 let brand = " ";
+const current_date = Date.now();
+let recent = "No";
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
-const sectionProducts = document.querySelector('#products');
+const selectRecent = document.querySelector('#recent-select');
 const spanNbProducts = document.querySelector('#nbProducts');
+const sectionProducts = document.querySelector('#products');
 
 /**
  * Set global value
@@ -153,6 +156,10 @@ selectShow.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
@@ -162,6 +169,10 @@ selectPage.addEventListener('change', async (event) => {
 
   if (brand != " ") {
     products.result = products.result.filter(product => product.brand == brand);
+  }
+
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   setCurrentProducts(products);
@@ -174,7 +185,29 @@ selectBrand.addEventListener('change', async (event) => {
   if (event.target.value != " ") {
     products.result = products.result.filter(product => product.brand == event.target.value);
   }
+
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
   brand = event.target.value;
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+});
+
+selectRecent.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  
+  if (event.target.value == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
+
+  recent = event.target.value;
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
