@@ -20,6 +20,7 @@ Search for available brands list
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
+let brand = " ";
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -148,12 +149,20 @@ const render = (products, pagination) => {
 selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
 
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
 
 selectPage.addEventListener('change', async (event) => {
   const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
+
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
@@ -165,7 +174,8 @@ selectBrand.addEventListener('change', async (event) => {
   if (event.target.value != " ") {
     products.result = products.result.filter(product => product.brand == event.target.value);
   }
-  
+  brand = event.target.value;
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
