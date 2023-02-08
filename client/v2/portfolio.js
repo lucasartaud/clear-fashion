@@ -23,6 +23,7 @@ let currentPagination = {};
 let brand = " ";
 let reasonable = "No";
 let recent = "No";
+let sort = "price-asc";
 const current_date = Date.now();
 
 // instantiate the selectors
@@ -31,6 +32,7 @@ const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
 const selectReasonable = document.querySelector('#reasonable-select');
 const selectRecent = document.querySelector('#recent-select');
+const selectSort = document.querySelector('#sort-select');
 const spanNbProducts = document.querySelector('#nbProducts');
 const sectionProducts = document.querySelector('#products');
 
@@ -102,6 +104,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
         <span>${product.price}</span>
+        <span>${product.released}</span>
       </div>
     `;
     })
@@ -144,6 +147,22 @@ const render = (products, pagination) => {
   renderIndicators(pagination);
 };
 
+function priceAsc(a, b) {
+  return parseFloat(a.price) - parseFloat(b.price);
+}
+
+function PriceDesc(a, b) {
+  return parseFloat(b.price) - parseFloat(a.price);
+}
+
+function DateAsc(a, b) {
+  return new Date(b.released) - new Date(a.released);
+}
+
+function DateDesc(a, b) {
+  return new Date(a.released) - new Date(b.released);
+}
+
 /**
  * Declaration of all Listeners
  */
@@ -166,6 +185,19 @@ selectShow.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
+  if (sort == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
@@ -185,6 +217,19 @@ selectPage.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
+  if (sort == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
@@ -202,6 +247,19 @@ selectBrand.addEventListener('change', async (event) => {
 
   if (recent == "Yes") {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
+  if (sort == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
   }
 
   brand = event.target.value;
@@ -225,6 +283,19 @@ selectReasonable.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
+  if (sort == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
   reasonable = event.target.value;
 
   setCurrentProducts(products);
@@ -246,7 +317,54 @@ selectRecent.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => product.price <= 50);
   }
 
+  if (sort == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
   recent = event.target.value;
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+});
+
+selectSort.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  
+  if (event.target.value == "price-asc") {
+    products.result = products.result.sort(priceAsc);
+  }
+  else if (event.target.value == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (event.target.value == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (event.target.value == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
+
+  if (reasonable == "Yes") {
+    products.result = products.result.filter(product => product.price <= 50);
+  }
+
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
+  sort = event.target.value;
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
@@ -259,10 +377,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     brand_names.result,
     value => `<option value="${value}">${value}</option>`
   ).join('');
-  console.log(brands);
+  
   selectBrand.innerHTML = brands;
   
   const products = await fetchProducts();
+  products.result = products.result.sort(priceAsc);
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
