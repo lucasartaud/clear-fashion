@@ -34,6 +34,8 @@ const selectReasonable = document.querySelector('#reasonable-select');
 const selectRecent = document.querySelector('#recent-select');
 const selectSort = document.querySelector('#sort-select');
 const spanNbProducts = document.querySelector('#nbProducts');
+const spanNbBrands = document.querySelector('#nbBrands');
+const spanNbRecentProducts = document.querySelector('#nbRecentProducts')
 const sectionProducts = document.querySelector('#products');
 
 /**
@@ -137,7 +139,7 @@ const renderPagination = pagination => {
  */
 const renderIndicators = pagination => {
   const {count} = pagination;
-
+  
   spanNbProducts.innerHTML = count;
 };
 
@@ -147,7 +149,7 @@ const render = (products, pagination) => {
   renderIndicators(pagination);
 };
 
-function priceAsc(a, b) {
+function PriceAsc(a, b) {
   return parseFloat(a.price) - parseFloat(b.price);
 }
 
@@ -186,7 +188,7 @@ selectShow.addEventListener('change', async (event) => {
   }
 
   if (sort == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (sort == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -218,7 +220,7 @@ selectPage.addEventListener('change', async (event) => {
   }
 
   if (sort == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (sort == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -250,7 +252,7 @@ selectBrand.addEventListener('change', async (event) => {
   }
 
   if (sort == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (sort == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -284,7 +286,7 @@ selectReasonable.addEventListener('change', async (event) => {
   }
 
   if (sort == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (sort == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -318,7 +320,7 @@ selectRecent.addEventListener('change', async (event) => {
   }
 
   if (sort == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (sort == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -340,7 +342,7 @@ selectSort.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
   
   if (event.target.value == "price-asc") {
-    products.result = products.result.sort(priceAsc);
+    products.result = products.result.sort(PriceAsc);
   }
   else if (event.target.value == "price-desc") {
     products.result = products.result.sort(PriceDesc);
@@ -372,6 +374,8 @@ selectSort.addEventListener('change', async (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const brand_names = await fetchBrands();
+  spanNbBrands.innerHTML = brand_names.result.length;
+  
   brand_names.result.unshift(" ");
   const brands = Array.from(
     brand_names.result,
@@ -381,8 +385,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectBrand.innerHTML = brands;
   
   const products = await fetchProducts();
-  products.result = products.result.sort(priceAsc);
+  products.result = products.result.sort(PriceAsc);
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
+
+  const all_products = await fetchProducts(1, currentPagination.count);
+  console.table(all_products.result);
+  spanNbRecentProducts.innerHTML = all_products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60).length;
 });
