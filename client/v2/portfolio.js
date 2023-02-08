@@ -159,6 +159,14 @@ selectPage.addEventListener('change', async (event) => {
   render(currentProducts, currentPagination);
 });
 
+selectBrand.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  products.result = products.result.filter(product => product.brand == event.target.value);
+  
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
   const brand_names = await fetchBrands();
   console.log(brand_names);
