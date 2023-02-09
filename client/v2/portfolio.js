@@ -39,6 +39,7 @@ const spanNbRecentProducts = document.querySelector('#nbRecentProducts');
 const spanPercentile50 = document.querySelector('#percentile50');
 const spanPercentile90 = document.querySelector('#percentile90');
 const spanPercentile95 = document.querySelector('#percentile95');
+const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const sectionProducts = document.querySelector('#products');
 
 /**
@@ -411,10 +412,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   spanNbRecentProducts.innerHTML = all_products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60).length;
   
   let prices = [];
+  let lastReleasedDate = new Date(all_products.result[0].released);
   for (let product_id in all_products.result) {
     prices.push(all_products.result[product_id].price);
+    if (new Date(all_products.result[product_id].released) > new Date(lastReleasedDate)) {
+      lastReleasedDate = new Date(all_products.result[product_id].released);
+    }
   }
   spanPercentile50.innerHTML = Math.round(quantile(prices, 0.50));
   spanPercentile90.innerHTML = Math.round(quantile(prices, 0.90));
   spanPercentile95.innerHTML = Math.round(quantile(prices, 0.95));
+  spanLastReleasedDate.innerHTML = lastReleasedDate.toDateString();
 });
