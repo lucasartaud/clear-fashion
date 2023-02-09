@@ -24,6 +24,8 @@ let brand = " ";
 let reasonable = "No";
 let recent = "No";
 let sort = "price-asc";
+let favorite = "No";
+let favorite_products = [];
 const current_date = Date.now();
 
 // instantiate the selectors
@@ -33,6 +35,7 @@ const selectBrand = document.querySelector('#brand-select');
 const selectReasonable = document.querySelector('#reasonable-select');
 const selectRecent = document.querySelector('#recent-select');
 const selectSort = document.querySelector('#sort-select');
+const selectFavorite = document.querySelector('#favorite-select');
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
 const spanNbRecentProducts = document.querySelector('#nbRecentProducts');
@@ -96,6 +99,62 @@ const fetchBrands = async () => {
   }
 };
 
+function changeFavorite(uuid) {
+  if (favorite_products.includes(uuid)) {
+    favorite_products = favorite_products.filter(item => !(item == uuid));
+  }
+  else {
+    favorite_products.push(uuid);
+  }
+
+  const products = [];
+  products.result = currentProducts;
+  products.meta = currentPagination;
+
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
+
+  if (reasonable == "Yes") {
+    products.result = products.result.filter(product => product.price <= 50);
+  }
+
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
+  if (sort == "price-asc") {
+    products.result = products.result.sort(PriceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+}
+
+function textFavorite(uuid) {
+  let text = "";
+  if (favorite_products.includes(uuid)) {
+    text = "Remove favorite";
+  }
+  else {
+    text = "Add favorite";
+  }
+  return text;
+}
+
 /**
  * Render list of products
  * @param  {Array} products
@@ -111,6 +170,7 @@ const renderProducts = products => {
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}</span>
         <span>${product.released}</span>
+        <button onclick="changeFavorite('${product.uuid}')">${textFavorite(product.uuid)}</button>
       </div>
     `;
     })
@@ -204,6 +264,10 @@ selectShow.addEventListener('change', async (event) => {
     products.result = products.result.sort(DateDesc);
   }
 
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
@@ -236,6 +300,10 @@ selectPage.addEventListener('change', async (event) => {
     products.result = products.result.sort(DateDesc);
   }
 
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
@@ -266,6 +334,10 @@ selectBrand.addEventListener('change', async (event) => {
   }
   else if (sort == "date-desc") {
     products.result = products.result.sort(DateDesc);
+  }
+
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
   }
 
   brand = event.target.value;
@@ -302,6 +374,10 @@ selectReasonable.addEventListener('change', async (event) => {
     products.result = products.result.sort(DateDesc);
   }
 
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
   reasonable = event.target.value;
 
   setCurrentProducts(products);
@@ -334,6 +410,10 @@ selectRecent.addEventListener('change', async (event) => {
   }
   else if (sort == "date-desc") {
     products.result = products.result.sort(DateDesc);
+  }
+
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
   }
 
   recent = event.target.value;
@@ -370,16 +450,56 @@ selectSort.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
+  if (favorite == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
   sort = event.target.value;
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
 });
 
-const asc = arr => arr.sort((a, b) => a - b);
+selectFavorite.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  if (event.target.value == "Yes") {
+    products.result = products.result.filter(product => favorite_products.includes(product.uuid));
+  }
+
+  if (brand != " ") {
+    products.result = products.result.filter(product => product.brand == brand);
+  }
+
+  if (reasonable == "Yes") {
+    products.result = products.result.filter(product => product.price <= 50);
+  }
+
+  if (recent == "Yes") {
+    products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+  }
+
+  if (sort == "price-asc") {
+    products.result = products.result.sort(PriceAsc);
+  }
+  else if (sort == "price-desc") {
+    products.result = products.result.sort(PriceDesc);
+  }
+  else if (sort == "date-asc") {
+    products.result = products.result.sort(DateAsc);
+  }
+  else if (sort == "date-desc") {
+    products.result = products.result.sort(DateDesc);
+  }
+
+  favorite = event.target.value;
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+});
 
 const quantile = (arr, q) => {
-  const sorted = asc(arr);
+  const sorted = arr.sort((a, b) => a - b);
   const pos = (sorted.length - 1) * q;
   const base = Math.floor(pos);
   const rest = pos - base;
