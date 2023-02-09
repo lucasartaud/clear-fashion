@@ -35,7 +35,10 @@ const selectRecent = document.querySelector('#recent-select');
 const selectSort = document.querySelector('#sort-select');
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
-const spanNbRecentProducts = document.querySelector('#nbRecentProducts')
+const spanNbRecentProducts = document.querySelector('#nbRecentProducts');
+const spanPercentile50 = document.querySelector('#percentile50');
+const spanPercentile90 = document.querySelector('#percentile90');
+const spanPercentile95 = document.querySelector('#percentile95');
 const sectionProducts = document.querySelector('#products');
 
 /**
@@ -372,6 +375,20 @@ selectSort.addEventListener('change', async (event) => {
   render(currentProducts, currentPagination);
 });
 
+const asc = arr => arr.sort((a, b) => a - b);
+
+const quantile = (arr, q) => {
+  const sorted = asc(arr);
+  const pos = (sorted.length - 1) * q;
+  const base = Math.floor(pos);
+  const rest = pos - base;
+  if (sorted[base + 1] !== undefined) {
+      return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+  } else {
+      return sorted[base];
+  }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   const brand_names = await fetchBrands();
   spanNbBrands.innerHTML = brand_names.result.length;
@@ -391,6 +408,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   render(currentProducts, currentPagination);
 
   const all_products = await fetchProducts(1, currentPagination.count);
-  console.table(all_products.result);
   spanNbRecentProducts.innerHTML = all_products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60).length;
+  
+  let prices = [];
+  for (let product_id in all_products.result) {
+    prices.push(all_products.result[product_id].price);
+  }
+  spanPercentile50.innerHTML = Math.round(quantile(prices, 0.50));
+  spanPercentile90.innerHTML = Math.round(quantile(prices, 0.90));
+  spanPercentile95.innerHTML = Math.round(quantile(prices, 0.95));
 });
