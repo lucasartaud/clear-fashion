@@ -20,7 +20,7 @@ Search for available brands list
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
-let brand = " ";
+let brand = "No";
 let reasonable = "No";
 let recent = "No";
 let sort = "price-asc";
@@ -111,7 +111,7 @@ function changeFavorite(uuid) {
   products.result = currentProducts;
   products.meta = currentPagination;
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -168,8 +168,8 @@ const renderProducts = products => {
       <div class="product" id=${product.uuid}>
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
-        <span>${product.price}</span>
-        <span>${product.released}</span>
+        <span>${product.price}€</span>
+        <span>${new Date(product.released).toDateString()}</span>
         <button onclick="changeFavorite('${product.uuid}')">${textFavorite(product.uuid)}</button>
       </div>
     `;
@@ -239,7 +239,7 @@ function DateDesc(a, b) {
 selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -275,7 +275,7 @@ selectShow.addEventListener('change', async (event) => {
 selectPage.addEventListener('change', async (event) => {
   const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -311,7 +311,7 @@ selectPage.addEventListener('change', async (event) => {
 selectBrand.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
 
-  if (event.target.value != " ") {
+  if (event.target.value != "No") {
     products.result = products.result.filter(product => product.brand == event.target.value);
   }
 
@@ -357,7 +357,7 @@ selectReasonable.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -391,7 +391,7 @@ selectRecent.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -438,7 +438,7 @@ selectSort.addEventListener('change', async (event) => {
     products.result = products.result.sort(DateDesc);
   }
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -467,7 +467,7 @@ selectFavorite.addEventListener('change', async (event) => {
     products.result = products.result.filter(product => favorite_products.includes(product.uuid));
   }
 
-  if (brand != " ") {
+  if (brand != "No") {
     products.result = products.result.filter(product => product.brand == brand);
   }
 
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const brand_names = await fetchBrands();
   spanNbBrands.innerHTML = brand_names.result.length;
   
-  brand_names.result.unshift(" ");
+  brand_names.result.unshift("No");
   const brands = Array.from(
     brand_names.result,
     value => `<option value="${value}">${value}</option>`

@@ -1,0 +1,40 @@
+body {
+	font-family: sans-serif;
+    color:black;
+	line-height: 1.4;
+	font-size: 1em;
+    font-weight: normal;
+    padding-left: 5em;
+    padding-right: 5em;
+    background-color: lightgrey;
+}
+
+h1 {
+	color:navy;
+	text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+section {
+    border: solid;
+    border-radius: 30px;
+    padding: 1em;
+    margin: 1em;
+    background-color: white;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.product {
+    display: list-item;
+    margin-left : 1em;
+}
