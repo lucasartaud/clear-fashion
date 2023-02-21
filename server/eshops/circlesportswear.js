@@ -9,17 +9,20 @@ const cheerio = require('cheerio');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.grid__item .card-wrapper.underline-links-hover')
+  return $('.product-grid-container .grid__item')
     .map((i, element) => {
-      const name = $(element)
+      let name = $(element)
         .find('.full-unstyled-link')
         .text()
         .trim()
         .replace(/\s/g, ' ');
-      const price =
+        name = name.substr(0, name.length/2).trim();
+      const price = parseInt(
         $(element)
-          .find('.money')
-          .text();
+          .find('.price__regular .money')
+          .text()
+          .slice(1)
+      );
 
       return {name, price};
     })
