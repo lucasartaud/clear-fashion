@@ -23,8 +23,9 @@ const parse = data => {
           .text()
           .slice(1)
       );
+      const brand = 'Circle Sportswear';
 
-      return {name, price};
+      return {name, price, brand};
     })
     .get();
 };
