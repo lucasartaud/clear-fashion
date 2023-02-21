@@ -79,8 +79,8 @@ async function main() {
   let sitesToScrape = ['https://shop.circlesportswear.com/collections/all', 'https://www.montlimart.com/99-vetements'];
   
   for (page = 1; page <= 16; page++) {
-    sitesToScrape.push(`https://www.dedicatedbrand.com/en/men/all-men#page=${page}`)
-    sitesToScrape.push(`https://www.dedicatedbrand.com/en/women/all-women#page=${page}`)
+    sitesToScrape.push(`https://www.dedicatedbrand.com/en/men/all-men?p=${page}`)
+    sitesToScrape.push(`https://www.dedicatedbrand.com/en/women/all-women?p=${page}`)
   }
 
   let products = [];
