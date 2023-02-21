@@ -76,19 +76,28 @@ async function scrape (eshop) {
 }
 
 async function main() {
-  const sitesToScrape = ['https://www.dedicatedbrand.com/en/men/all-men', 'https://www.dedicatedbrand.com/en/women/all-women', 'https://shop.circlesportswear.com/collections/all', 'https://www.montlimart.com/99-vetements'];
+  let sitesToScrape = ['https://shop.circlesportswear.com/collections/all', 'https://www.montlimart.com/99-vetements'];
+  
+  for (page = 1; page <= 16; page++) {
+    sitesToScrape.push(`https://www.dedicatedbrand.com/en/men/all-men#page=${page}`)
+    sitesToScrape.push(`https://www.dedicatedbrand.com/en/women/all-women#page=${page}`)
+  }
+
   let products = [];
 
   for (const site of sitesToScrape) {
     const scrapedProducts = await scrape(site);
     products = products.concat(scrapedProducts);
   }
-  console.table(products);
+  console.log(products);
   const jsonData = JSON.stringify(products, null, 2);
 
-  fs.writeFile(`products.json`, jsonData, (err) => {
-  if (err) throw err;
-    console.log('Table saved to file!');
+  fs.unlink('products.json', (err) => {
+    if (err && err.code !== 'ENOENT') throw err; // Ignore error if file doesn't exist
+    fs.writeFile('products.json', jsonData, (err) => {
+      if (err) throw err;
+      console.log('Table saved to file!');
+    });
   });
 }
 

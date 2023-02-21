@@ -22,8 +22,14 @@ const parse = data => {
           .text()
       );
       const brand = 'Montlimart';
+      const url = $(element)
+        .find('.product-miniature__thumb-link')
+        .attr('href');
+      const photo = $(element)
+        .find('img')
+        .attr('data-src');
 
-      return {name, price, brand};
+      return {name, price, brand, url, photo};
     })
     .get();
 };
