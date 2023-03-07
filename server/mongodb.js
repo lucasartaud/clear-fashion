@@ -84,14 +84,37 @@ async function findProductsSortedByDate(order) {
     await client.close();
 }
 
+async function findRecentProducts(days = 14) {
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+    const db = client.db('clearfashion');
+
+    const collection = db.collection('products');
+
+    const minimumDate = new Date(Date.now() - (days * 24 * 60 * 60 * 1000)).toISOString();
+    console.log(minimumDate);
+    //const result = await collection.find({ date: { $gte: minimumDate } }).toArray();
+
+    let result = await collection.find().toArray();
+    result = result.filter(product => {
+        const productDate = new Date(product.date).toISOString();
+        return productDate >= minimumDate;
+    });
+
+    console.log(`${result.length} products with date less than '${days}' days ago`);
+    console.log(result);
+
+    await client.close();
+}
+
 async function main() {
-    //await insertProducts();
-    //findProductsByBrand('Circle Sportswear');
-    //findProductsMaximumPrice(30);
-    //findProductsSortedByPrice(1);
-    //findProductsSortedByPrice(-1);
+    await insertProducts();
+    findProductsByBrand('Circle Sportswear');
+    findProductsMaximumPrice(30);
+    findProductsSortedByPrice(1);
+    findProductsSortedByPrice(-1);
     findProductsSortedByDate(1);
-    //findProductsSortedByDate(-1);
+    findProductsSortedByDate(-1);
+    findRecentProducts(2);
 }
 
 main();
