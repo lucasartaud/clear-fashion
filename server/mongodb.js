@@ -6,14 +6,25 @@ async function insertProducts() {
     const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
     const db =  client.db(MONGODB_DB_NAME);
     
-    await db.collection('products').deleteMany({});
+    //await db.collection('products').deleteMany({});
 
     const products = require('./products.json');
     
     const collection = db.collection('products');
-    const result = await collection.insertMany(products);
-    
-    console.log(result);
+
+    for (const product of products) {
+        const existingProduct = await collection.findOne({ url: product.url });
+
+        if (!existingProduct) {
+            const result = await collection.insertOne(product);
+            console.log(`Inserted product with URL: ${product.url}`);
+        } else {
+            console.log(`Skipped product with URL: ${product.url}`);
+        }
+    }
+
+    //const result = await collection.insertMany(products);
+    //console.log(result);
 
     await client.close();
 }
@@ -32,7 +43,7 @@ async function findProductsByBrand(brandName) {
 }
 
 async function findProductsMaximumPrice(maximumPrice) {
-    const client = await MongoClient.connect(MONGODB_URI, { 'useNewUrlParser': true});
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
     const db = client.db('clearfashion');
 
     const collection = db.collection('products');
@@ -46,25 +57,41 @@ async function findProductsMaximumPrice(maximumPrice) {
 }
 
 async function findProductsSortedByPrice(order) {
-    const client = await MongoClient.connect(MONGODB_URI, { 'useNewUrlParser': true});
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
     const db = client.db('clearfashion');
 
     const collection = db.collection('products');
     
     const result = await collection.find().sort({ price: order }).toArray();
     
-    console.log(`${result.length} products sorted by '${order}' (1 for ascending or -1 for descending order)`);
+    console.log(`${result.length} products sorted by price with order '${order}' (1 for ascending or -1 for descending order)`);
     console.log(result);
     
     await client.close();
 }
 
+async function findProductsSortedByDate(order) {
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+    const db = client.db('clearfashion');
+
+    const collection = db.collection('products');
+
+    const result = await collection.find().sort({ date: order }).toArray();
+
+    console.log(`${result.length} products sorted by date with order '${order}' (1 for older first or -1 for most recent first)`);
+    console.log(result);
+
+    await client.close();
+}
+
 async function main() {
-    await insertProducts();
-    findProductsByBrand('Circle Sportswear');
-    findProductsMaximumPrice(30);
-    findProductsSortedByPrice(1);
-    findProductsSortedByPrice(-1);
+    //await insertProducts();
+    //findProductsByBrand('Circle Sportswear');
+    //findProductsMaximumPrice(30);
+    //findProductsSortedByPrice(1);
+    //findProductsSortedByPrice(-1);
+    findProductsSortedByDate(1);
+    //findProductsSortedByDate(-1);
 }
 
 main();

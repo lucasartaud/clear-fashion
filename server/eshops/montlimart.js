@@ -8,6 +8,7 @@ const cheerio = require('cheerio');
  */
 const parse = data => {
   const $ = cheerio.load(data);
+  const today = new Date().toLocaleDateString('en-US');
 
   return $('.products-list .products-list__block.products-list__block--grid')
     .map((i, element) => {
@@ -29,7 +30,7 @@ const parse = data => {
         .find('img')
         .attr('data-src');
 
-      return {name, price, brand, url, photo};
+      return {name, price, brand, url, photo, date:today};
     })
     .get();
 };

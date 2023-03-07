@@ -8,6 +8,7 @@ const cheerio = require('cheerio');
  */
 const parse = data => {
   const $ = cheerio.load(data);
+  const today = new Date().toLocaleDateString('en-US');
 
   return $('.productList-container .productList')
     .map((i, element) => {
@@ -25,12 +26,12 @@ const parse = data => {
       let url = $(element)
         .find('.productList-link')
         .attr('href');
-        url = 'https://www.dedicatedbrand.com/'.concat(url);
+        url = 'https://www.dedicatedbrand.com'.concat(url);
       const photo = $(element)
         .find('img')
         .attr('data-src');
 
-      return {name, price, brand, url, photo};
+      return {name, price, brand, url, photo, date:today};
     })
     .get();
 };
