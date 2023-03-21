@@ -24,18 +24,8 @@ const spanNbRecentProducts = document.querySelector('#nbRecentProducts');
 const spanPercentile50 = document.querySelector('#percentile50');
 const spanPercentile90 = document.querySelector('#percentile90');
 const spanPercentile95 = document.querySelector('#percentile95');
-const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
+const spanLastdateDate = document.querySelector('#lastdateDate');
 const sectionProducts = document.querySelector('#products');
-
-/**
- * Set global value
- * @param {Array} - products to display
- * @param {Object} meta - pagination meta info
- */
-const setCurrentProducts = ({products, meta}) => {
-  currentProducts = products;
-  currentPagination = meta;
-};
 
 /**
  * Fetch products from api
@@ -69,17 +59,16 @@ const fetchBrands = async () => {
   }
 };
 
-function changeFavorite(uuid) {
-  if (favorite_products.includes(uuid)) {
-    favorite_products = favorite_products.filter(item => !(item == uuid));
+function changeFavorite(id) {
+  if (favorite_products.includes(id)) {
+    favorite_products = favorite_products.filter(item => !(item == id));
   }
   else {
-    favorite_products.push(uuid);
+    favorite_products.push(id);
   }
 
   let products = [];
   products = currentProducts;
-  products.meta = currentPagination;
 
   if (brand != "No") {
     products = products.filter(product => product.brand == brand);
@@ -90,7 +79,7 @@ function changeFavorite(uuid) {
   }
 
   if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (sort == "price-asc") {
@@ -107,16 +96,15 @@ function changeFavorite(uuid) {
   }
 
   if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 }
 
-function textFavorite(uuid) {
+function textFavorite(id) {
   let text = "";
-  if (favorite_products.includes(uuid)) {
+  if (favorite_products.includes(id)) {
     text = "Remove favorite";
   }
   else {
@@ -130,17 +118,18 @@ function textFavorite(uuid) {
  * @param  {Array} products
  */
 const renderProducts = products => {
+  currentProducts = products;
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const template = products
     .map(product => {
       return `
-      <div class="product" id=${product.uuid}>
+      <div class="product" id=${product._id}>
         <span>${product.brand}</span>
         <a href="${product.link}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
-        <span>${new Date(product.released).toDateString()}</span>
-        <button onclick="changeFavorite('${product.uuid}')">${textFavorite(product.uuid)}</button>
+        <span>${new Date(product.date).toDateString()}</span>
+        <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
       </div>
     `;
     })
@@ -152,37 +141,6 @@ const renderProducts = products => {
   sectionProducts.appendChild(fragment);
 };
 
-/**
- * Render page selector
- * @param  {Object} pagination
- */
-const renderPagination = pagination => {
-  const {currentPage, pageCount} = pagination;
-  const options = Array.from(
-    {'length': pageCount},
-    (value, index) => `<option value="${index + 1}">${index + 1}</option>`
-  ).join('');
-
-  selectPage.innerHTML = options;
-  selectPage.selectedIndex = currentPage - 1;
-};
-
-/**
- * Render page selector
- * @param  {Object} pagination
- */
-const renderIndicators = pagination => {
-  const {count} = pagination;
-  
-  spanNbProducts.innerHTML = count;
-};
-
-const render = (products, pagination) => {
-  renderProducts(products);
-  renderPagination(pagination);
-  renderIndicators(pagination);
-};
-
 function PriceAsc(a, b) {
   return parseFloat(a.price) - parseFloat(b.price);
 }
@@ -192,11 +150,11 @@ function PriceDesc(a, b) {
 }
 
 function DateAsc(a, b) {
-  return new Date(b.released) - new Date(a.released);
+  return new Date(b.date) - new Date(a.date);
 }
 
 function DateDesc(a, b) {
-  return new Date(a.released) - new Date(b.released);
+  return new Date(a.date) - new Date(b.date);
 }
 
 /**
@@ -215,7 +173,7 @@ selectBrand.addEventListener('change', async (event) => {
   }
 
   if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (sort == "price-asc") {
@@ -232,13 +190,12 @@ selectBrand.addEventListener('change', async (event) => {
   }
 
   if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
   brand = event.target.value;
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 });
 
 selectReasonable.addEventListener('change', async (event) => {
@@ -249,7 +206,7 @@ selectReasonable.addEventListener('change', async (event) => {
   }
 
   if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (brand != "No") {
@@ -270,20 +227,19 @@ selectReasonable.addEventListener('change', async (event) => {
   }
 
   if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
   reasonable = event.target.value;
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 });
 
 selectRecent.addEventListener('change', async (event) => {
   let products = await fetchProducts();
   
   if (event.target.value == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (brand != "No") {
@@ -308,13 +264,12 @@ selectRecent.addEventListener('change', async (event) => {
   }
 
   if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
   recent = event.target.value;
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 });
 
 selectSort.addEventListener('change', async (event) => {
@@ -342,24 +297,23 @@ selectSort.addEventListener('change', async (event) => {
   }
 
   if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
   sort = event.target.value;
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 });
 
 selectFavorite.addEventListener('change', async (event) => {
   let products = await fetchProducts();
 
   if (event.target.value == "Yes") {
-    products = products.filter(product => favorite_products.includes(product.uuid));
+    products = products.filter(product => favorite_products.includes(product._id));
   }
 
   if (brand != "No") {
@@ -371,7 +325,7 @@ selectFavorite.addEventListener('change', async (event) => {
   }
 
   if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60);
+    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
   }
 
   if (sort == "price-asc") {
@@ -389,8 +343,7 @@ selectFavorite.addEventListener('change', async (event) => {
 
   favorite = event.target.value;
 
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(products);
 });
 
 const quantile = (arr, q) => {
@@ -418,25 +371,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectBrand.innerHTML = brands;
   
   let products = await fetchProducts();
-  console.log(products)
   products = products.sort(PriceAsc);
 
-  setCurrentProducts(products);
-  render(products, currentPagination);
+  renderProducts(products);
 
   const all_products = await fetchProducts();
-  spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.released)) / (1000 * 60 * 60 * 24) <= 60).length;
+  spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60).length;
   
   let prices = [];
-  let lastReleasedDate = new Date(all_products[0].released);
+  let lastdateDate = new Date(all_products[0].date);
   for (let product_id in all_products) {
     prices.push(all_products[product_id].price);
-    if (new Date(all_products[product_id].released) > new Date(lastReleasedDate)) {
-      lastReleasedDate = new Date(all_products[product_id].released);
+    if (new Date(all_products[product_id].date) > new Date(lastdateDate)) {
+      lastdateDate = new Date(all_products[product_id].date);
     }
   }
   spanPercentile50.innerHTML = Math.round(quantile(prices, 0.50));
   spanPercentile90.innerHTML = Math.round(quantile(prices, 0.90));
   spanPercentile95.innerHTML = Math.round(quantile(prices, 0.95));
-  spanLastReleasedDate.innerHTML = lastReleasedDate.toDateString();
+  spanLastdateDate.innerHTML = lastdateDate.toDateString();
 });
