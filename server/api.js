@@ -55,7 +55,7 @@ app.get('/products/search', async (req, res) => {
   res.json(result);
 });
 
-app.get('/products/brands', async (req, res) => {
+app.get('/brands', async (req, res) => {
   const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
   const db = client.db(MONGODB_DB_NAME);
   const collection = db.collection('products');
