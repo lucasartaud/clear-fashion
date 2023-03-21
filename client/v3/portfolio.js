@@ -376,6 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderProducts(products);
 
   const all_products = await fetchProducts();
+  spanNbProducts.innerHTML = all_products.length;
   spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60).length;
   
   let prices = [];
