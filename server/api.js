@@ -25,9 +25,9 @@ app.listen(PORT);
 
 console.log(`📡 Running on port ${PORT}`);
 
-app.get('/products/great_search', async (req, res) => {
+app.get('/products/search', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 12;
+  const show = parseInt(req.query.show) || 12;
   const brand = req.query.brand;
   const price = req.query.price;
   const sort = req.query.sort;
@@ -61,10 +61,10 @@ app.get('/products/great_search', async (req, res) => {
   }
 
   const count = await collection.countDocuments(filter);
-  const totalPages = Math.ceil(count / limit);
-  const skip = (page - 1) * limit;
+  const totalPages = Math.ceil(count / show);
+  const skip = (page - 1) * show;
 
-  const result = await collection.find(filter).sort(sortOptions).skip(skip).limit(limit).toArray();
+  const result = await collection.find(filter).sort(sortOptions).skip(skip).limit(show).toArray();
 
   res.json({
     currentPage: page,
@@ -72,28 +72,6 @@ app.get('/products/great_search', async (req, res) => {
     totalCount: count,
     data: result
   });
-});
-
-app.get('/products/search', async (req, res) => {
-  const limit = parseInt(req.query.limit) || 12;
-  const brand = req.query.brand;
-  const price = req.query.price;
-
-  const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
-  const db = client.db(MONGODB_DB_NAME);
-  const collection = db.collection('products');
-
-  let filter = {};
-  if (brand) {
-    filter.brand = brand;
-  }
-  if (price) {
-    filter.price = { $lte: parseInt(price) };
-  }
-
-  const result = await collection.find(filter).sort({price: 1}).limit(limit).toArray();
-  
-  res.json(result);
 });
 
 app.get('/products/:id', async (req, res) => {

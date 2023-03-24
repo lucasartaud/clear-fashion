@@ -13,6 +13,8 @@ let favorite_products = [];
 const current_date = Date.now();
 
 // instantiate the selectors
+const selectShow = document.querySelector('#show-select');
+const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
 const selectReasonable = document.querySelector('#reasonable-select');
 const selectRecent = document.querySelector('#recent-select');
@@ -27,13 +29,31 @@ const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const sectionProducts = document.querySelector('#products');
 
-/**
- * Fetch products from api
- * @param  {Number}  [page=1] - current page to fetch
- * @param  {Number}  [size=12] - size of the page
- * @return {Object}
- */
-const fetchProducts = async () => {
+const fetchProducts = async (page = 1, limit = 12, brand, price, sort, days) => {
+  try {
+    let url = `https://clear-fashion-ashen-six.vercel.app/products/great_search?page=${page}&limit=${limit}`;
+    if (brand) {
+      url += `&brand=${brand}`;
+    }
+    if (price) {
+      url += `&price=${price}`;
+    }
+    if (sort) {
+      url += `&sort=${sort}`;
+    }
+    if (days) {
+      url += `&days=${days}`;
+    }
+    const response = await fetch(url);
+    const body = await response.json();
+    return body.data;
+  } catch (error) {
+    console.error(error);
+    return currentProducts;
+  }
+};
+
+const fetchAllProducts = async () => {
   try {
     const response = await fetch(
       `https://clear-fashion-ashen-six.vercel.app/products`
@@ -42,7 +62,7 @@ const fetchProducts = async () => {
     return body;
   } catch (error) {
     console.error(error);
-    return {currentProducts, currentPagination};
+    return currentProducts;
   }
 };
 
@@ -55,7 +75,7 @@ const fetchBrands = async () => {
     return body;
   } catch (error) {
     console.error(error);
-    return {currentProducts, currentPagination};
+    return currentProducts;
   }
 };
 
@@ -371,11 +391,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectBrand.innerHTML = brands;
   
   let products = await fetchProducts();
-  products = products.sort(PriceAsc);
-
   renderProducts(products);
 
-  const all_products = await fetchProducts();
+  const all_products = await fetchAllProducts();
   spanNbProducts.innerHTML = all_products.length;
   spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60).length;
   
