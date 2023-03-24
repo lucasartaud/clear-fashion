@@ -10,7 +10,6 @@ let brand = 'No';
 let price = 'No';
 let days = 'No';
 let sort = 'Cheap';
-let favorite = 'No';
 let favorite_products = [];
 const current_date = Date.now();
 
@@ -21,7 +20,6 @@ const selectBrand = document.querySelector('#brand-select');
 const selectPrice = document.querySelector('#price-select');
 const selectDays = document.querySelector('#days-select');
 const selectSort = document.querySelector('#sort-select');
-const selectFavorite = document.querySelector('#favorite-select');
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
 const spanNbRecentProducts = document.querySelector('#nbRecentProducts');
@@ -89,40 +87,6 @@ function changeFavorite(id) {
   else {
     favorite_products.push(id);
   }
-
-  let products = [];
-  products = currentProducts;
-
-  if (brand != "No") {
-    products = products.filter(product => product.brand == brand);
-  }
-
-  if (reasonable == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (sort == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (sort == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (sort == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (sort == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
-  renderProducts(products);
 }
 
 function textFavorite(id) {
@@ -138,7 +102,6 @@ function textFavorite(id) {
 
 /**
  * Render list of products
- * @param  {Array} products
  */
 const renderProducts = products => {
   currentProducts = products;
@@ -163,22 +126,6 @@ const renderProducts = products => {
   sectionProducts.innerHTML = '<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
-
-function PriceAsc(a, b) {
-  return parseFloat(a.price) - parseFloat(b.price);
-}
-
-function PriceDesc(a, b) {
-  return parseFloat(b.price) - parseFloat(a.price);
-}
-
-function DateAsc(a, b) {
-  return new Date(b.date) - new Date(a.date);
-}
-
-function DateDesc(a, b) {
-  return new Date(a.date) - new Date(b.date);
-}
 
 /**
  * Declaration of all Listeners
@@ -217,43 +164,6 @@ selectDays.addEventListener('change', async (event) => {
 selectSort.addEventListener('change', async (event) => {
   sort = event.target.value;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
-});
-
-selectFavorite.addEventListener('change', async (event) => {
-  let products = await fetchProducts();
-
-  if (event.target.value == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
-  if (brand != "No") {
-    products = products.filter(product => product.brand == brand);
-  }
-
-  if (reasonable == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (sort == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (sort == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (sort == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (sort == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  favorite = event.target.value;
-
   renderProducts(products);
 });
 

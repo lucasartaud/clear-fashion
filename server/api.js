@@ -57,9 +57,9 @@ app.get('/products/search', async (req, res) => {
   } else if (sort === 'Expensive') {
     sortOptions.price = -1;
   } else if (sort === 'Recent') {
-    sortOptions._id = -1;
+    sortOptions.date = -1;
   } else if (sort === 'Oldest') {
-    sortOptions._id = 1;
+    sortOptions.date = 1;
   }
 
   const count = await collection.countDocuments(filter);
