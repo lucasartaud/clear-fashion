@@ -50,13 +50,13 @@ app.get('/products/search', async (req, res) => {
   }
 
   let sortOptions = {price: 1};
-  if (sort === 'cheap') {
+  if (sort === 'Cheap') {
     sortOptions.price = 1;
-  } else if (sort === 'expensive') {
+  } else if (sort === 'Expensive') {
     sortOptions.price = -1;
-  } else if (sort === 'recent') {
+  } else if (sort === 'Recent') {
     sortOptions._id = -1;
-  } else if (sort === 'oldest') {
+  } else if (sort === 'Oldest') {
     sortOptions._id = 1;
   }
 

@@ -31,7 +31,7 @@ const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const sectionProducts = document.querySelector('#products');
 
-const fetchProducts = async (page = 1, limit = 12, brand, price, days, sort) => {
+const fetchProducts = async (show, page, brand, price, days, sort) => {
   try {
     let url = `https://clear-fashion-ashen-six.vercel.app/products/search?show=${show}&page=${page}`;
     if (brand && brand != 'No') {
@@ -184,10 +184,21 @@ function DateDesc(a, b) {
  * Declaration of all Listeners
  */
 
+selectShow.addEventListener('change', async (event) => {
+  show = event.target.value;
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
+  renderProducts(products);
+});
+
+selectPage.addEventListener('change', async (event) => {
+  page = event.target.value;
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
+  renderProducts(products);
+});
+
 selectBrand.addEventListener('change', async (event) => {
   brand = event.target.value;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  console.table(products);
   renderProducts(products);
 });
 
