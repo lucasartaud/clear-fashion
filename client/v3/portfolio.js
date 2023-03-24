@@ -128,7 +128,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
-        <span>${new Date(product.date).toDateString()}</span>
+        <span>${product.date}</span>
         <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
       </div>
     `;
@@ -152,7 +152,7 @@ const renderFavoriteProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
-        <span>${new Date(product.date).toDateString()}</span>
+        <span>${product.date}</span>
         <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
       </div>
     `;
