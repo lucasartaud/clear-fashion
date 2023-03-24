@@ -28,6 +28,11 @@ const spanPercentile90 = document.querySelector('#percentile90');
 const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const sectionProducts = document.querySelector('#products');
+const sectionFavoriteProducts = document.querySelector('#favoriteProducts');
+
+/**
+ * Fetch API
+ */
 
 const fetchProducts = async (show, page, brand, price, days, sort) => {
   try {
@@ -80,13 +85,21 @@ const fetchBrands = async () => {
   }
 };
 
-function changeFavorite(id) {
+/**
+ * Favorite products
+ */
+
+async function changeFavorite(id) {
   if (favorite_products.includes(id)) {
     favorite_products = favorite_products.filter(item => !(item == id));
   }
   else {
     favorite_products.push(id);
   }
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort);
+  renderProducts(products);
+  products = products.filter(product => favorite_products.includes(product._id));
+  renderFavoriteProducts(products);
 }
 
 function textFavorite(id) {
@@ -103,6 +116,7 @@ function textFavorite(id) {
 /**
  * Render list of products
  */
+
 const renderProducts = products => {
   currentProducts = products;
   const fragment = document.createDocumentFragment();
@@ -125,6 +139,30 @@ const renderProducts = products => {
   fragment.appendChild(div);
   sectionProducts.innerHTML = '<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
+};
+
+const renderFavoriteProducts = products => {
+  currentProducts = products;
+  const fragment = document.createDocumentFragment();
+  const div = document.createElement('div');
+  const template = products
+    .map(product => {
+      return `
+      <div class="product" id=${product._id}>
+        <span>${product.brand}</span>
+        <a href="${product.url}" target="_blank">${product.name}</a>
+        <span>${product.price}€</span>
+        <span>${new Date(product.date).toDateString()}</span>
+        <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
+      </div>
+    `;
+    })
+    .join('');
+
+  div.innerHTML = template;
+  fragment.appendChild(div);
+  sectionFavoriteProducts.innerHTML = '<h2>Favorite products</h2>';
+  sectionFavoriteProducts.appendChild(fragment);
 };
 
 /**
@@ -166,6 +204,10 @@ selectSort.addEventListener('change', async (event) => {
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
+
+/**
+ * Launched on page load
+ */
 
 const quantile = (arr, q) => {
   const sorted = arr.sort((a, b) => a - b);
