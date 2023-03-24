@@ -47,7 +47,8 @@ app.get('/products/search', async (req, res) => {
   if (days) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    filter.date = { $gte: new Date(cutoffDate.toISOString().slice(0,10)) };
+    const cutoffDateString = cutoffDate.toISOString().slice(0, 10);
+    filter.date = { $gte: cutoffDateString };
   }
 
   let sortOptions = {price: 1};
