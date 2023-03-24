@@ -38,3 +38,7 @@ section {
     display: list-item;
     margin-left : 1em;
 }
+
+section:empty {
+    display: none;
+}
