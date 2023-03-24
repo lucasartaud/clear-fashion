@@ -26,12 +26,12 @@ app.listen(PORT);
 console.log(`📡 Running on port ${PORT}`);
 
 app.get('/products/search', async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
   const show = parseInt(req.query.show) || 12;
+  const page = parseInt(req.query.page) || 1;
   const brand = req.query.brand;
   const price = req.query.price;
-  const sort = req.query.sort;
   const days = parseInt(req.query.days); // new parameter for days
+  const sort = req.query.sort;
 
   const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
   const db = client.db(MONGODB_DB_NAME);
