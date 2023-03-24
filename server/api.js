@@ -40,7 +40,6 @@ app.get('/products/search', async (req, res) => {
   let filter = {};
   if (brand) {
     filter.brand = brand;
-    console.log("yes");
   }
   if (price) {
     filter.price = { $lte: parseInt(price) };
