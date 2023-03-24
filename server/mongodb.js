@@ -6,7 +6,7 @@ async function insertProducts() {
     const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
     const db =  client.db(MONGODB_DB_NAME);
     
-    //await db.collection('products').deleteMany({});
+    await db.collection('products').deleteMany({});
 
     const products = require('./products.json');
     

@@ -8,7 +8,11 @@ const cheerio = require('cheerio');
  */
 const parse = data => {
   const $ = cheerio.load(data);
-  const today = new Date().toLocaleDateString('en-US');
+  
+  const start = new Date('2023-01-01').getTime();
+  const end = new Date('2023-03-24').getTime();
+  const randomTimestamp = start + Math.random() * (end - start);
+  const date = new Date(randomTimestamp).toISOString().split('T')[0];
 
   return $('.productList-container .productList')
     .map((i, element) => {
@@ -31,7 +35,7 @@ const parse = data => {
         .find('img')
         .attr('data-src');
 
-      return {name, price, brand, url, photo, date:today};
+      return {name, price, brand, url, photo, date};
     })
     .get();
 };

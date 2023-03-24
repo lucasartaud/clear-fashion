@@ -45,8 +45,9 @@ app.get('/products/search', async (req, res) => {
     filter.price = { $lte: parseInt(price) };
   }
   if (days) {
-    const cutoffDate = new Date(Date.now() - (days * 24 * 60 * 60 * 1000));
-    filter.releaseDate = { $gte: cutoffDate };
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    filter.date = { $gte: new Date(cutoffDate.toISOString().slice(0,10)) };
   }
 
   let sortOptions = {price: 1};
