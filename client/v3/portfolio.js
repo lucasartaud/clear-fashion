@@ -3,7 +3,6 @@
 
 // current products on the page
 let currentProducts = [];
-let currentPagination = {};
 let show = 12;
 let page = 1;
 let brand = 'No';
@@ -52,6 +51,15 @@ const fetchProducts = async (show, page, brand, price, days, sort) => {
     console.log(url);
     const response = await fetch(url);
     const body = await response.json();
+
+    const currentPage = body.currentPage;
+    const totalPages = body.totalPages;
+    const options = Array.from(
+      {'length': totalPages},
+      (value, index) => `<option value="${index + 1}">${index + 1}</option>`
+    ).join('');
+    selectPage.innerHTML = options;
+    selectPage.selectedIndex = currentPage - 1;
     return body.data;
   } catch (error) {
     console.error(error);
