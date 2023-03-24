@@ -30,7 +30,7 @@ app.get('/products/search', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const brand = req.query.brand;
   const price = req.query.price;
-  const days = parseInt(req.query.days); // new parameter for days
+  const days = parseInt(req.query.days);
   const sort = req.query.sort;
 
   const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
@@ -40,13 +40,14 @@ app.get('/products/search', async (req, res) => {
   let filter = {};
   if (brand) {
     filter.brand = brand;
+    console.log("yes");
   }
   if (price) {
     filter.price = { $lte: parseInt(price) };
   }
-  if (days) { // if days parameter is present
-    const cutoffDate = new Date(Date.now() - (days * 24 * 60 * 60 * 1000)); // calculate the cutoff date
-    filter.releaseDate = { $gte: cutoffDate }; // filter by products released after the cutoff date
+  if (days) {
+    const cutoffDate = new Date(Date.now() - (days * 24 * 60 * 60 * 1000));
+    filter.releaseDate = { $gte: cutoffDate };
   }
 
   let sortOptions = {price: 1};

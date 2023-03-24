@@ -4,11 +4,13 @@
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
-let brand = "No";
-let reasonable = "No";
-let recent = "No";
-let sort = "price-asc";
-let favorite = "No";
+let show = 12;
+let page = 1;
+let brand = 'No';
+let price = 'No';
+let days = 'No';
+let sort = 'Cheap';
+let favorite = 'No';
 let favorite_products = [];
 const current_date = Date.now();
 
@@ -16,8 +18,8 @@ const current_date = Date.now();
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const selectBrand = document.querySelector('#brand-select');
-const selectReasonable = document.querySelector('#reasonable-select');
-const selectRecent = document.querySelector('#recent-select');
+const selectPrice = document.querySelector('#price-select');
+const selectDays = document.querySelector('#days-select');
 const selectSort = document.querySelector('#sort-select');
 const selectFavorite = document.querySelector('#favorite-select');
 const spanNbProducts = document.querySelector('#nbProducts');
@@ -29,21 +31,22 @@ const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const sectionProducts = document.querySelector('#products');
 
-const fetchProducts = async (page = 1, limit = 12, brand, price, sort, days) => {
+const fetchProducts = async (page = 1, limit = 12, brand, price, days, sort) => {
   try {
-    let url = `https://clear-fashion-ashen-six.vercel.app/products/great_search?page=${page}&limit=${limit}`;
-    if (brand) {
+    let url = `https://clear-fashion-ashen-six.vercel.app/products/search?show=${show}&page=${page}`;
+    if (brand && brand != 'No') {
       url += `&brand=${brand}`;
     }
-    if (price) {
+    if (price && price != 'No') {
       url += `&price=${price}`;
+    }
+    if (days && days != 'No') {
+      url += `&days=${days}`;
     }
     if (sort) {
       url += `&sort=${sort}`;
     }
-    if (days) {
-      url += `&days=${days}`;
-    }
+    console.log(url);
     const response = await fetch(url);
     const body = await response.json();
     return body.data;
@@ -182,150 +185,27 @@ function DateDesc(a, b) {
  */
 
 selectBrand.addEventListener('change', async (event) => {
-  let products = await fetchProducts();
-
-  if (event.target.value != "No") {
-    products = products.filter(product => product.brand == event.target.value);
-  }
-
-  if (reasonable == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (sort == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (sort == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (sort == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (sort == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
   brand = event.target.value;
-
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
+  console.table(products);
   renderProducts(products);
 });
 
-selectReasonable.addEventListener('change', async (event) => {
-  let products = await fetchProducts();
-  
-  if (event.target.value == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (brand != "No") {
-    products = products.filter(product => product.brand == brand);
-  }
-
-  if (sort == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (sort == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (sort == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (sort == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
-  reasonable = event.target.value;
-
+selectPrice.addEventListener('change', async (event) => {
+  price = event.target.value;
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
-selectRecent.addEventListener('change', async (event) => {
-  let products = await fetchProducts();
-  
-  if (event.target.value == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (brand != "No") {
-    products = products.filter(product => product.brand == brand);
-  }
-
-  if (reasonable == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (sort == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (sort == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (sort == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (sort == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
-  recent = event.target.value;
-
+selectDays.addEventListener('change', async (event) => {
+  days = event.target.value;
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
 selectSort.addEventListener('change', async (event) => {
-  let products = await fetchProducts();
-  
-  if (event.target.value == "price-asc") {
-    products = products.sort(PriceAsc);
-  }
-  else if (event.target.value == "price-desc") {
-    products = products.sort(PriceDesc);
-  }
-  else if (event.target.value == "date-asc") {
-    products = products.sort(DateAsc);
-  }
-  else if (event.target.value == "date-desc") {
-    products = products.sort(DateDesc);
-  }
-
-  if (brand != "No") {
-    products = products.filter(product => product.brand == brand);
-  }
-
-  if (reasonable == "Yes") {
-    products = products.filter(product => product.price <= 50);
-  }
-
-  if (recent == "Yes") {
-    products = products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60);
-  }
-
-  if (favorite == "Yes") {
-    products = products.filter(product => favorite_products.includes(product._id));
-  }
-
   sort = event.target.value;
-
+  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
