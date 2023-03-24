@@ -31,7 +31,7 @@ app.get('/products/search', async (req, res) => {
   const brand = req.query.brand;
   const price = req.query.price;
   const days = parseInt(req.query.days);
-  const sort = req.query.sort;
+  const sort = req.query.sort || 'Cheap';
 
   const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
   const db = client.db(MONGODB_DB_NAME);
@@ -51,7 +51,7 @@ app.get('/products/search', async (req, res) => {
     filter.date = { $gte: cutoffDateString };
   }
 
-  let sortOptions = {price: 1};
+  let sortOptions = {};
   if (sort === 'Cheap') {
     sortOptions.price = 1;
   } else if (sort === 'Expensive') {
