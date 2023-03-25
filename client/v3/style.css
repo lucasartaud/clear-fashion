@@ -29,6 +29,10 @@ section {
     background-color: white;
 }
 
+section:empty {
+    display: none;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -39,6 +43,6 @@ section {
     margin-left : 1em;
 }
 
-section:empty {
-    display: none;
+.productPhoto {
+    height: 3em;
 }

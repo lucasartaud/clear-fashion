@@ -26,7 +26,7 @@ const spanPercentile50 = document.querySelector('#percentile50');
 const spanPercentile90 = document.querySelector('#percentile90');
 const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
-const sectionProducts = document.querySelector('#products');
+const sectionSearchProducts = document.querySelector('#searchProducts');
 const sectionFavoriteProducts = document.querySelector('#favoriteProducts');
 
 /**
@@ -133,6 +133,7 @@ const renderProducts = products => {
     .map(product => {
       return `
       <div class="product" id=${product._id}>
+        <img class="productPhoto" src="${product.photo}">
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
@@ -145,8 +146,9 @@ const renderProducts = products => {
 
   div.innerHTML = template;
   fragment.appendChild(div);
-  sectionProducts.innerHTML = '<h2>Products</h2>';
-  sectionProducts.appendChild(fragment);
+  sectionSearchProducts.innerHTML = '<h2>Products</h2>';
+  sectionSearchProducts.appendChild(fragment);
+  sectionSearchProducts.style.gridTemplateColumns = '1fr 1fr;';
 };
 
 const renderFavoriteProducts = products => {
@@ -157,6 +159,7 @@ const renderFavoriteProducts = products => {
     .map(product => {
       return `
       <div class="product" id=${product._id}>
+        <img class="productPhoto" src="${product.photo}">
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
@@ -179,6 +182,7 @@ const renderFavoriteProducts = products => {
 
 selectShow.addEventListener('change', async (event) => {
   show = event.target.value;
+  page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
@@ -191,24 +195,28 @@ selectPage.addEventListener('change', async (event) => {
 
 selectBrand.addEventListener('change', async (event) => {
   brand = event.target.value;
+  page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
 selectPrice.addEventListener('change', async (event) => {
   price = event.target.value;
+  page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
 selectDays.addEventListener('change', async (event) => {
   days = event.target.value;
+  page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
 
 selectSort.addEventListener('change', async (event) => {
   sort = event.target.value;
+  page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
   renderProducts(products);
 });
