@@ -98,6 +98,8 @@ const fetchBrands = async () => {
  */
 
 async function changeFavorite(id) {
+  console.log(id);
+  console.log(favorite_products);
   if (favorite_products.includes(id)) {
     favorite_products = favorite_products.filter(item => !(item == id));
   }
@@ -127,8 +129,6 @@ function textFavorite(id) {
 
 const renderProducts = products => {
   currentProducts = products;
-  const fragment = document.createDocumentFragment();
-  const div = document.createElement('div');
   const template = products
     .map(product => {
       return `
@@ -137,24 +137,18 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
-        <span>${product.date}</span>
+        <span>${new Date(product.date).toLocaleDateString()}</span>
         <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
       </div>
     `;
     })
     .join('');
 
-  div.innerHTML = template;
-  fragment.appendChild(div);
-  sectionSearchProducts.innerHTML = '<h2>Products</h2>';
-  sectionSearchProducts.appendChild(fragment);
-  sectionSearchProducts.style.gridTemplateColumns = '1fr 1fr;';
+  sectionSearchProducts.innerHTML = template;
 };
 
 const renderFavoriteProducts = products => {
   currentProducts = products;
-  const fragment = document.createDocumentFragment();
-  const div = document.createElement('div');
   const template = products
     .map(product => {
       return `
@@ -163,17 +157,14 @@ const renderFavoriteProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.url}" target="_blank">${product.name}</a>
         <span>${product.price}€</span>
-        <span>${product.date}</span>
+        <span>${new Date(product.date).toLocaleDateString()}</span>
         <button onclick="changeFavorite('${product._id}')">${textFavorite(product._id)}</button>
       </div>
     `;
     })
     .join('');
 
-  div.innerHTML = template;
-  fragment.appendChild(div);
-  sectionFavoriteProducts.innerHTML = '<h2>Favorite products</h2>';
-  sectionFavoriteProducts.appendChild(fragment);
+  sectionFavoriteProducts.innerHTML = template;
 };
 
 /**
@@ -267,5 +258,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   spanPercentile50.innerHTML = Math.round(quantile(prices, 0.50));
   spanPercentile90.innerHTML = Math.round(quantile(prices, 0.90));
   spanPercentile95.innerHTML = Math.round(quantile(prices, 0.95));
-  spanLastReleasedDate.innerHTML = lastReleasedDate.toDateString();
+  spanLastReleasedDate.innerHTML = lastReleasedDate.toLocaleDateString();
 });
