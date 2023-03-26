@@ -98,23 +98,19 @@ const fetchBrands = async () => {
  */
 
 async function changeFavorite(id) {
-  console.log(id);
-  console.log(favorite_products);
-  if (favorite_products.includes(id)) {
-    favorite_products = favorite_products.filter(item => !(item == id));
+  if (favorite_products.find(element => element._id === id)) {
+    favorite_products = favorite_products.filter(item => item._id !== id);
   }
   else {
-    favorite_products.push(id);
+    favorite_products.push(currentProducts.find(element => element._id === id));
   }
-  let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort);
-  renderProducts(products);
-  products = products.filter(product => favorite_products.includes(product._id));
-  renderFavoriteProducts(products);
+  document.getElementById(id).getElementsByTagName('button')[0].innerText = textFavorite(id);
+  renderFavoriteProducts();
 }
 
 function textFavorite(id) {
   let text = "";
-  if (favorite_products.includes(id)) {
+  if (favorite_products.find(element => element._id === id)) {
     text = "Remove favorite";
   }
   else {
@@ -148,8 +144,7 @@ const renderProducts = products => {
 };
 
 const renderFavoriteProducts = products => {
-  currentProducts = products;
-  const template = products
+  const template = favorite_products
     .map(product => {
       return `
       <div class="product" id=${product._id}>
