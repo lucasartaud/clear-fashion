@@ -8,7 +8,7 @@ let page = 1;
 let brand = 'No';
 let price = 'No';
 let days = 'No';
-let sort = 'Cheap';
+let sort = 'Cheapest';
 let favorite_products = [];
 const current_date = Date.now();
 
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const all_products = await fetchAllProducts();
   spanNbProducts.innerHTML = all_products.length;
-  spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 60).length;
+  spanNbRecentProducts.innerHTML = all_products.filter(product => (current_date - new Date(product.date)) / (1000 * 60 * 60 * 24) <= 14).length;
   
   let prices = [];
   let lastReleasedDate= new Date(all_products[0].date);

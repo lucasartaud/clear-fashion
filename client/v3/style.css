@@ -51,8 +51,9 @@ section {
       "name"
       "price"
       "date";
-    border: 1px solid #ccc;
+    border: 1px solid black;
     padding: 1em;
+    background-color: #ededed;
 }
   
 .productPhoto {
