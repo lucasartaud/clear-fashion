@@ -26,6 +26,7 @@ const spanPercentile50 = document.querySelector('#percentile50');
 const spanPercentile90 = document.querySelector('#percentile90');
 const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
+const spanNbSearchProducts = document.querySelector('#nbSearchProducts');
 const sectionSearchProducts = document.querySelector('#searchProducts');
 const sectionFavoriteProducts = document.querySelector('#favoriteProducts');
 
@@ -54,6 +55,7 @@ const fetchProducts = async (show, page, brand, price, days, sort) => {
 
     const currentPage = body.currentPage;
     const totalPages = body.totalPages;
+    spanNbSearchProducts.innerHTML = body.totalCount + ' products found';
     const options = Array.from(
       {'length': totalPages},
       (value, index) => `<option value="${index + 1}">${index + 1}</option>`
@@ -123,7 +125,7 @@ function textFavorite(id) {
  * Render list of products
  */
 
-const renderProducts = products => {
+const renderSearchProducts = products => {
   currentProducts = products;
   const template = products
     .map(product => {
@@ -170,41 +172,41 @@ selectShow.addEventListener('change', async (event) => {
   show = event.target.value;
   page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 selectPage.addEventListener('change', async (event) => {
   page = event.target.value;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 selectBrand.addEventListener('change', async (event) => {
   brand = event.target.value;
   page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 selectPrice.addEventListener('change', async (event) => {
   price = event.target.value;
   page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 selectDays.addEventListener('change', async (event) => {
   days = event.target.value;
   page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 selectSort.addEventListener('change', async (event) => {
   sort = event.target.value;
   page = 1;
   let products = await fetchProducts(show=show, page=page, brand=brand, price=price, days=days, sort=sort)
-  renderProducts(products);
+  renderSearchProducts(products);
 });
 
 /**
@@ -236,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectBrand.innerHTML = brands;
   
   let products = await fetchProducts();
-  renderProducts(products);
+  renderSearchProducts(products);
 
   const all_products = await fetchAllProducts();
   spanNbProducts.innerHTML = all_products.length;

@@ -28,6 +28,9 @@ const parse = data => {
           .text()
           .slice(1)
       );
+      if (isNaN(price)) {
+        return null; // skip this element if price is NaN
+      }
       const brand = 'Circle Sportswear';
       let url = $(element)
         .find('.full-unstyled-link')

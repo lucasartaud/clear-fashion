@@ -26,6 +26,9 @@ const parse = data => {
           .find('.productList-price')
           .text()
       );
+      if (isNaN(price)) {
+        return null; // skip this element if price is NaN
+      }
       const brand = 'Dedicated';
       let url = $(element)
         .find('.productList-link')

@@ -26,6 +26,9 @@ const parse = data => {
           .find('.price')
           .text()
       );
+      if (isNaN(price)) {
+        return null; // skip this element if price is NaN
+      }
       const brand = 'Montlimart';
       const url = $(element)
         .find('.product-miniature__thumb-link')
