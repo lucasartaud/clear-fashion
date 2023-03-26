@@ -29,10 +29,6 @@ section {
     background-color: white;
 }
 
-section:empty {
-    display: none;
-}
-
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
