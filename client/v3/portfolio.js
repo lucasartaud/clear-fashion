@@ -28,6 +28,7 @@ const spanPercentile95 = document.querySelector('#percentile95');
 const spanLastReleasedDate = document.querySelector('#lastReleasedDate');
 const spanNbSearchProducts = document.querySelector('#nbSearchProducts');
 const sectionSearchProducts = document.querySelector('#searchProducts');
+const spanNbFavoriteProducts = document.querySelector('#nbFavoriteProducts');
 const sectionFavoriteProducts = document.querySelector('#favoriteProducts');
 
 /**
@@ -160,7 +161,8 @@ const renderFavoriteProducts = products => {
     `;
     })
     .join('');
-
+  
+  spanNbFavoriteProducts.innerHTML = favorite_products.length + (favorite_products.length > 1 ? ' favorite products' : ' favorite product');
   sectionFavoriteProducts.innerHTML = template;
 };
 
