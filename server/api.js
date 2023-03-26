@@ -52,11 +52,11 @@ app.get('/products/search', async (req, res) => {
   }
 
   let sortOptions = {};
-  if (sort === 'Cheap') {
+  if (sort === 'Cheapest') {
     sortOptions.price = 1;
-  } else if (sort === 'Expensive') {
+  } else if (sort === 'Most expensive') {
     sortOptions.price = -1;
-  } else if (sort === 'Recent') {
+  } else if (sort === 'Most recent') {
     sortOptions.date = -1;
   } else if (sort === 'Oldest') {
     sortOptions.date = 1;
